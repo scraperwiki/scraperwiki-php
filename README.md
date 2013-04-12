@@ -10,7 +10,7 @@ The symlinks, for example to `simple_html_dom.php`, in scraperwiki/ are for
 backwards compatibility with ScraperWiki Classic scrapers. You can just
 use it like this:
 
-   require 'simple_html_dom.php'
-   require 'excel_reader2.php'
-
-
+```php
+require 'simple_html_dom.php'
+require 'excel_reader2.php'
+```
