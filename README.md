@@ -2,9 +2,7 @@ ScraperWiki PHP libraries
 -------------------------
 
 This directory contains PHP libraries which ScraperWiki Classic used, and which
-aren't packaged in PECL or PEAR.
-
-It's checked out and added to the `include_path` on new ScraperWiki.
+aren't packaged in PECL or PEAR. It's checked out and added to the `include_path` on new ScraperWiki.
 
 You can just use it like this:
 
