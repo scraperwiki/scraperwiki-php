@@ -16,7 +16,7 @@ function __construct() {
 // set up the db connection
 static function _connect($db = 'sqlite:scraperwiki.sqlite') {
 	if(empty($db)) {
-		R::setup();	
+		R::setup();	// for testing locally or where zero config is possible. Use like this: scraperwiki::_connect('');		
 	} else {
 		R::setup($db);	
 	}
@@ -53,7 +53,7 @@ static function	save_sqlite($unique_keys = array(), $data, $table_name='swdata')
            }
      }
 
-    unset($value); // to fix the foreach pass by reference offset 
+    unset($value); // to fix the foreach pass by reference offset - http://www.php.net/manual/en/control-structures.foreach.php#113098
 
 	// prepare an insert if we don't need to update
     foreach ($data as $key => $value) {
