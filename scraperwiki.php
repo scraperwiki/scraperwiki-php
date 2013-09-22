@@ -1,12 +1,26 @@
 <?php
 
 require 'rb.php';
-//R::setup('sqlite:scraperwiki.sqlite');
 
 
 
 class scraperwiki {
 
+
+function __construct() {
+	// connect
+	scraperwiki::_connect();	
+}
+
+
+// set up the db connection
+static function _connect($db = 'sqlite:scraperwiki.sqlite') {
+	if(empty($db)) {
+		R::setup();	
+	} else {
+		R::setup($db);	
+	}
+}
 
 
 static function save($unique_keys = array(), $data, $table_name="swdata", $date = null) {
@@ -25,13 +39,11 @@ static function	save_sqlite($unique_keys = array(), $data, $table_name='swdata')
 
     if (count($data) == 0)
         return;
-    //if (!array_key_exists(0, $data))
-    //    $data = array($data);
 
 	$table = R::dispense($table_name);	
 
      // convert special types
-     foreach ($data as $key => &$value) {
+     foreach ($data as &$value) {
            if ($value instanceof DateTime) {
                $new_value = clone $value;
                $new_value->setTimezone(new DateTimeZone('UTC'));
@@ -41,6 +53,8 @@ static function	save_sqlite($unique_keys = array(), $data, $table_name='swdata')
            }
      }
 
+    unset($value); // to fix the foreach pass by reference offset 
+
 	// prepare an insert if we don't need to update
     foreach ($data as $key => $value) {
     	$table->$key = $value;
@@ -48,6 +62,8 @@ static function	save_sqlite($unique_keys = array(), $data, $table_name='swdata')
 
     // If this is the first row ever added, use this to create table and exit
 	if (!R::$redbean->tableExists($table_name)) {
+		
+		// Define unique keys when creating table
 		if(!empty($unique_keys)) {
  			$table->setMeta("buildcommand.unique", array($unique_keys));					
 		}
@@ -59,22 +75,11 @@ static function	save_sqlite($unique_keys = array(), $data, $table_name='swdata')
 	// if the table already exists and has unique keys, prepare an 'upsert' equivalent statement
     if(!empty($unique_keys)) {
 
-		$filter = array();
-        $wheres = '';
-        foreach ($unique_keys as $unique) {
-            $wheres .= $unique . " = ? AND ";
-			$filter[] = $data[$unique];
-        }
-        $wheres = rtrim($wheres, ' AND ');
-
         $parameters['table_name'] = $table_name;
         $parameters['keys'] = join(", ", array_keys($data)); 
         $parameters['values'] = join(', ', array_fill(0, count($data), '?')); // adds the ? placeholder for values
-        //$parameters['where'] = $wheres;	                
 
         $sql = vsprintf('INSERT or REPLACE INTO %s (%s) VALUES (%s)', $parameters);
-
-		echo $sql; echo '<br>'; print_r(array_values($data));
         R::exec($sql,array_values($data));
 
 		return true;
@@ -104,20 +109,19 @@ static function get_var($name, $default=null) {
    $data = R::findOne('swvariables',
            ' name = ? ',array($name));
 
-
-	// get type
-   	//     $bean->getMeta('type');
-	
    if (!$data)
       return $default; 
-   $svalue = $data->value_blob;; 
-   //$vtype = $data[0][1];
-   //if ($vtype == "integer")
-   //   return intval($svalue); 
-   //if ($vtype == "double")
-   //   return floatval($svalue); 
-   //if ($vtype == "NULL")
-   //   return null;
+
+   $svalue = $data->value_blob;
+   $vtype = $data->type;
+
+   if ($vtype == "integer")
+      return intval($svalue); 
+   if ($vtype == "double")
+      return floatval($svalue); 
+   if ($vtype == "NULL")
+      return null;
+
    return $svalue; 
 }
 
