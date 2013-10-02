@@ -1,15 +1,16 @@
 <?php
 
 require 'rb.php';
-
+new scraperwiki();
 
 
 class scraperwiki {
 
+protected $db;
 
-function __construct() {
+public function __construct($db = null) {
 	// connect
-	scraperwiki::_connect();	
+	scraperwiki::_connect($db);	
 }
 
 
@@ -31,9 +32,7 @@ static function save($unique_keys = array(), $data, $table_name="swdata", $date 
 }
 
 
-/*
- This is a first attempt at a RedbeanPHP approach to replicate basic functionality of scraperwiki::save_sqlite
-*/
+// A port of scraperwiki::save_sqlite from classic using RedbeanPHP
 
 static function	save_sqlite($unique_keys = array(), $data, $table_name='swdata') {
 
