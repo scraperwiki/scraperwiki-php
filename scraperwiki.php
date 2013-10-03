@@ -1,21 +1,25 @@
 <?php
 
 require 'rb.php';
-new scraperwiki();
+
+// This automatically instantiates the class with default connection settings, but requires you to manually instantiate if running locally
+if (empty($_SERVER["SERVER_ADDR"]) OR stripos($_SERVER["SERVER_ADDR"], '127.0.0.1') === false) {
+	new scraperwiki();
+}
 
 
 class scraperwiki {
 
 protected $db;
 
-public function __construct($db = null) {
+public function __construct($db = 'sqlite:scraperwiki.sqlite') {
 	// connect
 	scraperwiki::_connect($db);	
 }
 
 
 // set up the db connection
-static function _connect($db = 'sqlite:scraperwiki.sqlite') {
+static function _connect($db = null) {
 	if(empty($db)) {
 		R::setup();	// for testing locally or where zero config is possible. Use like this: scraperwiki::_connect('');		
 	} else {
