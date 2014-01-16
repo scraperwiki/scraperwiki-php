@@ -97,6 +97,12 @@ static function	save_sqlite($unique_keys = array(), $data, $table_name='swdata')
 
 }
 
+static function select($sql, $data = null) {
+   if (is_null($data))
+      $data = array();
+   $result = R::getAll("SELECT ".$sql, $data);
+   return $result;
+}
 
 static function save_var($name, $value) {	
    $vtype = gettype($value); 
