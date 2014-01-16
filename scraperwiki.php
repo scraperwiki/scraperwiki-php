@@ -32,7 +32,7 @@ static function save($unique_keys = array(), $data, $table_name="swdata", $date 
    $ldata = $data;   
    if (!is_null($date))
       $ldata["date"] = $date; 
-   return scraperwiki::save_sqlite($unique_keys, $ldata, $table); 
+   return scraperwiki::save_sqlite($unique_keys, $ldata, $table_name);
 }
 
 
