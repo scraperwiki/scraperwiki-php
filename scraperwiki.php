@@ -61,6 +61,8 @@ static function	save_sqlite($unique_keys = array(), $data, $table_name='swdata')
 	// prepare an insert if we don't need to update
     foreach ($data as $key => $value) {
     	$table->$key = $value;
+      // Don't do anything clever. Just always store everything as a string
+      $table->setMeta('cast.'.$key, 'string');
     }
 
     // If this is the first row ever added, use this to create table and exit
