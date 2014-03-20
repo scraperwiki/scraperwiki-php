@@ -13,7 +13,7 @@ require 'excel_reader2.php'
 ```
 
 The symlinks, for example to `simple_html_dom.php`, in scraperwiki/ are for
-backwards compatibility with ScraperWiki Classic scrapers. 
+backwards compatibility with ScraperWiki Classic scrapers.
 
 
 ## API reference:
@@ -41,3 +41,19 @@ Save a given variable `$name` with a given `$value` to the datastore.
 Retrieve a given variable `$name` from the datastore.
 
 If you pass an optional `$default` value, this will be returned in the case that the given variable `$name` could not be found in the datastore.
+
+#### scraperwiki::sqliteexecute($command, [$vars])
+
+Executes the given sqlite `$command`. Supports `CREATE`, `INSERT`, `SELECT`, `DELETE`, and `DROP` statements.
+
+An array of `$vars` can optionally be included, in which case `$command` will be treated as a prepared statement, and the supplied array values will be inserted into it wherever `?` characters appear. eg:
+
+```php
+scraperwiki::sqliteexecute("insert into swdata values (?,?,?)", array(16, "John Doe", "M"))
+```
+
+Unlike ScraperWiki Classic's PHP library, `scraperwiki::sqliteexecute()` automatically executes commands as soon as they are made. There is no need to call `scraperwiki::sqlitecommit()`.
+
+#### scraperwiki::sqlitecommit()
+
+A no-op, for compatibility with old scripts. Unlike on ScraperWiki Classic, `scraperwiki::sqliteexecute()` now commits commands automatically, as soon as they are made.

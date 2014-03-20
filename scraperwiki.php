@@ -138,6 +138,21 @@ static function get_var($name, $default=null) {
 }
 
 
+static function sqliteexecute($command, $vars=null) {
+    if(is_array($vars)){
+        $result = R::exec($command, $vars);
+    } else {
+        $result = R::exec($command);
+    }
+    return $result;
+}
+
+
+static function sqlitecommit() {
+   return True;
+}
+
+
 static function scrape($url) {
   $curl = curl_init($url);
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
